@@ -8,11 +8,11 @@ export default function Nav({ categories = [] }: { categories?: Category[] }) {
       <div className="px-6 h-14 flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <Link href="/" className="text-sm font-semibold text-foreground">
-            Design Skills
+            Designer Skills
           </Link>
           <span className="text-border">|</span>
           <p className="text-sm text-muted-foreground">
-            AI skills to automate your design workflow
+            A smll library of skills for
           </p>
         </div>
         <CommandMenu categories={categories} />

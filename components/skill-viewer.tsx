@@ -34,9 +34,9 @@ export default function SkillViewer({ skill }: Props) {
   }
 
   return (
-    <div>
+    <div className="shadow-[0_0_0_1px_rgba(0,0,0,0.1)] rounded-lg">
       {/* Toolbar */}
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-border">
+      <div className="flex items-center justify-between md:m-3 md:py-4 border-border">
         <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
           <button
             onClick={() => setMode("rendered")}
@@ -46,7 +46,7 @@ export default function SkillViewer({ skill }: Props) {
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            Rendered
+            Plain
           </button>
           <button
             onClick={() => setMode("raw")}
@@ -56,7 +56,7 @@ export default function SkillViewer({ skill }: Props) {
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            Raw
+            Markdown
           </button>
         </div>
 
@@ -84,7 +84,7 @@ export default function SkillViewer({ skill }: Props) {
 
       {/* Content */}
       {mode === "rendered" ? (
-        <div>
+        <div className="px-6 py-4">
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
@@ -104,7 +104,9 @@ export default function SkillViewer({ skill }: Props) {
                 </h3>
               ),
               p: ({ children }) => (
-                <p className="text-sm text-foreground/75 leading-relaxed mb-3">{children}</p>
+                <p className="text-sm text-foreground/75 leading-relaxed mb-3">
+                  {children}
+                </p>
               ),
               ul: ({ children }) => (
                 <ul className="list-disc pl-4 mb-3 space-y-1 text-foreground/75 text-sm">
@@ -141,7 +143,9 @@ export default function SkillViewer({ skill }: Props) {
               },
               hr: () => <hr className="border-border my-6" />,
               strong: ({ children }) => (
-                <strong className="font-semibold text-foreground">{children}</strong>
+                <strong className="font-semibold text-foreground">
+                  {children}
+                </strong>
               ),
               a: ({ href, children }) => (
                 <a
@@ -157,7 +161,7 @@ export default function SkillViewer({ skill }: Props) {
           </ReactMarkdown>
         </div>
       ) : (
-        <pre className="bg-muted rounded-xl p-5 overflow-x-auto text-sm font-mono leading-relaxed text-foreground/80 whitespace-pre-wrap">
+        <pre className="bg-muted rounded-xl m-4 p-5 overflow-x-auto text-sm font-mono leading-relaxed text-foreground/80 whitespace-pre-wrap">
           {skill.raw}
         </pre>
       )}
