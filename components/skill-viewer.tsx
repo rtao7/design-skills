@@ -46,7 +46,7 @@ export default function SkillViewer({ skill }: Props) {
                 : "text-muted-foreground hover:text-foreground"
             }`}
           >
-            Plain
+            Preview
           </button>
           <button
             onClick={() => setMode("raw")}
