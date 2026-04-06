@@ -141,7 +141,7 @@ export default function SkillBrowser({
                 onClick={() => selectCategory(cat)}
                 className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all duration-150 ${
                   isSelected
-                    ? "bg-white/80 ring-2 ring-accent/40 shadow-sm"
+                    ? "bg-white/80 ring-1 ring-accent/40"
                     : "hover:bg-white/60"
                 }`}
               >
