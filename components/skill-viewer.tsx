@@ -29,14 +29,16 @@ export default function SkillViewer({ skill }: Props) {
     const a = document.createElement("a");
     a.href = url;
     a.download = `${skill.slug}.md`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
 
   return (
     <div className="shadow-[0_0_0_1px_rgba(0,0,0,0.1)] rounded-lg">
       {/* Toolbar */}
-      <div className="flex items-center justify-between md:m-3 md:py-4 border-border">
+      <div className="flex items-center justify-between p-3 md:px-3 md:py-4">
         <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
           <button
             onClick={() => setMode("rendered")}
@@ -70,14 +72,16 @@ export default function SkillViewer({ skill }: Props) {
             ) : (
               <Copy className="w-4 h-4" />
             )}
-            {copied ? "Copied" : "Copy"}
+            <span className="hidden sm:inline">
+              {copied ? "Copied" : "Copy"}
+            </span>
           </button>
           <button
             onClick={handleDownload}
             className="flex items-center gap-1.5 text-sm px-3 py-1.5 bg-foreground text-background rounded-lg hover:bg-foreground/90 transition-colors"
           >
             <Download className="w-4 h-4" />
-            Download
+            <span className="hidden sm:inline">Download</span>
           </button>
         </div>
       </div>
@@ -146,14 +150,6 @@ export default function SkillViewer({ skill }: Props) {
                 <strong className="font-semibold text-foreground">
                   {children}
                 </strong>
-              ),
-              a: ({ href, children }) => (
-                <a
-                  href={href}
-                  className="text-accent underline underline-offset-2 hover:opacity-80 transition-opacity"
-                >
-                  {children}
-                </a>
               ),
             }}
           >

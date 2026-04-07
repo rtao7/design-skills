@@ -1,31 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { FileText, ChevronRight } from "lucide-react";
+import { FileText, ChevronRight, ChevronLeft } from "lucide-react";
 import type { Category, Skill } from "@/lib/skills";
 import SkillViewer from "@/components/skill-viewer";
-
-// Color palette per category name (falls back to blue)
-const FOLDER_COLORS: Record<
-  string,
-  { top: string; bottom: string; shadow: string }
-> = {
-  design: { top: "#74B3F5", bottom: "#3A7BD5", shadow: "#2A5BA5" },
-  product: { top: "#72C97A", bottom: "#3A9E45", shadow: "#2A7A33" },
-  research: { top: "#F5A96B", bottom: "#D96F2A", shadow: "#B05520" },
-  handoff: { top: "#C8C0B8", bottom: "#9A9088", shadow: "#7A7068" },
-  strategy: { top: "#5CCEC9", bottom: "#2A9E99", shadow: "#1A7A76" },
-  ux: { top: "#F57474", bottom: "#D93A3A", shadow: "#B02A2A" },
-};
-const DEFAULT_COLOR = { top: "#74B3F5", bottom: "#3A7BD5", shadow: "#2A5BA5" };
 
 const CATEGORY_ORDER = ["product", "design"];
 
 const PLACEHOLDER_FOLDERS = [
   { name: "handoff", displayName: "Handoff", comingSoon: true },
+  { name: "presentation", displayName: "Presentation", comingSoon: true },
 ];
 
-// Skill folder SVG and animation
+type MobilePanel = "categories" | "skills" | "detail";
+
 function FolderShape({ isSelected }: { isSelected: boolean }) {
   return (
     <svg
@@ -91,7 +79,6 @@ function FolderShape({ isSelected }: { isSelected: boolean }) {
           }}
         />
       </g>
-
       <path
         d="M2.00293 10.5H58.0029C58.8314 10.5 59.5029 11.1716 59.5029 12V48C59.5029 48.8284 58.8314 49.5 58.0029 49.5H2.00293C1.1745 49.5 0.50293 48.8284 0.50293 48V12C0.50293 11.1716 1.1745 10.5 2.00293 10.5Z"
         fill="#FFE7D7"
@@ -110,10 +97,17 @@ export default function SkillBrowser({
     categories.find((c) => c.name === "product") ?? categories[0] ?? null,
   );
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
+  const [mobilePanel, setMobilePanel] = useState<MobilePanel>("categories");
 
   function selectCategory(cat: Category) {
     setSelectedCategory(cat);
     setSelectedSkill(null);
+    setMobilePanel("skills");
+  }
+
+  function selectSkill(skill: Skill) {
+    setSelectedSkill(skill);
+    setMobilePanel("detail");
   }
 
   const sortedCategories = [
@@ -124,17 +118,21 @@ export default function SkillBrowser({
   ];
 
   return (
-    <div className="flex h-[calc(100vh-56px)] overflow-hidden border-t border-border bg-background">
-      {/* Column 1 — Folder Stack */}
-      <div className="w-48 shrink-0 border-r border-border overflow-y-auto bg-[#F4F2EE]">
-        <div className="px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-widest border-b border-border">
+    <div className="flex h-[calc(100dvh-56px)] overflow-hidden border-t border-border bg-background">
+      {/* ── Column 1 — Categories ── */}
+      <div
+        className={`
+          w-full md:w-48 md:flex shrink-0 flex-col
+          border-r border-border overflow-y-auto bg-[#F4F2EE]
+          ${mobilePanel === "categories" ? "flex" : "hidden"}
+        `}
+      >
+        <div className="px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-widest border-b border-border sticky top-0 bg-[#F4F2EE]">
           Categories
         </div>
         <div className="flex flex-col gap-2 p-4">
-          {/* Real categories */}
           {sortedCategories.map((cat) => {
             const isSelected = selectedCategory?.name === cat.name;
-            const colors = FOLDER_COLORS[cat.name] ?? DEFAULT_COLOR;
             return (
               <button
                 key={cat.name}
@@ -161,34 +159,45 @@ export default function SkillBrowser({
             );
           })}
 
-          {/* Placeholder folders */}
-          {PLACEHOLDER_FOLDERS.map((placeholder) => {
-            const colors = FOLDER_COLORS[placeholder.name] ?? DEFAULT_COLOR;
-            return (
-              <div
-                key={placeholder.name}
-                className="flex flex-col items-center gap-1.5 p-3 rounded-xl opacity-60 cursor-default"
-              >
-                <FolderShape isSelected={false} />
-                <div className="text-center leading-tight">
-                  <div className="text-xs font-medium text-foreground">
-                    {placeholder.displayName}
-                  </div>
-                  <div className="text-[10px] text-accent/80 font-medium">
-                    Coming soon
-                  </div>
+          {PLACEHOLDER_FOLDERS.map((placeholder) => (
+            <div
+              key={placeholder.name}
+              className="flex flex-col items-center gap-1.5 p-3 rounded-xl opacity-60 cursor-default"
+            >
+              <FolderShape isSelected={false} />
+              <div className="text-center leading-tight">
+                <div className="text-xs font-medium text-foreground">
+                  {placeholder.displayName}
+                </div>
+                <div className="text-[10px] text-accent/80 font-medium">
+                  Coming soon
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Column 2 — Skills */}
-      <div className="w-64 shrink-0 border-r border-border overflow-y-auto">
+      {/* ── Column 2 — Skills ── */}
+      <div
+        className={`
+          w-full md:w-64 md:flex shrink-0 flex-col
+          border-r border-border overflow-y-auto
+          ${mobilePanel === "skills" ? "flex" : "hidden"}
+        `}
+      >
+        {/* Back button — mobile only */}
+        <button
+          onClick={() => setMobilePanel("categories")}
+          className="md:hidden flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium text-accent border-b border-border sticky top-0 bg-background hover:bg-muted transition-colors"
+        >
+          <ChevronLeft className="w-3.5 h-3.5" />
+          Categories
+        </button>
+
         {selectedCategory ? (
           <>
-            <div className="px-3 py-2.5 text-xs font-medium text-muted-foreground uppercase tracking-widest border-b border-border">
+            <div className="px-3 py-3 text-xs font-medium text-muted-foreground uppercase tracking-widest sticky top-0 bg-background hidden md:block">
               Skills
             </div>
             {selectedCategory.skills.map((skill) => {
@@ -198,7 +207,7 @@ export default function SkillBrowser({
               return (
                 <button
                   key={skill.slug}
-                  onClick={() => setSelectedSkill(skill)}
+                  onClick={() => selectSkill(skill)}
                   className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-left transition-colors ${
                     isSelected
                       ? "bg-accent text-white"
@@ -223,12 +232,28 @@ export default function SkillBrowser({
         )}
       </div>
 
-      {/* Column 3 — Detail */}
-      <div className="flex-1 overflow-y-auto">
+      {/* ── Column 3 — Detail ── */}
+      <div
+        className={`
+          flex-1 w-full md:flex flex-col overflow-y-auto
+          ${mobilePanel === "detail" ? "flex" : "hidden"}
+        `}
+      >
+        {/* Back button — mobile only */}
+        {selectedSkill && (
+          <button
+            onClick={() => setMobilePanel("skills")}
+            className="md:hidden flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium text-accent border-b border-border sticky top-0 bg-background hover:bg-muted transition-colors z-10"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            {selectedCategory?.displayName}
+          </button>
+        )}
+
         {selectedSkill ? (
-          <div className="p-8 md:p-12 max-w-full">
+          <div className="p-6 md:p-8 lg:p-12 max-w-full">
             <div className="mb-8 pb-6">
-              <h1 className="text-3xl font-semibold text-foreground mb-2 leading-tight font-serif">
+              <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-2 leading-tight font-serif">
                 {selectedSkill.title}
               </h1>
               <p className="text-muted-foreground leading-relaxed mb-4">
