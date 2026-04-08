@@ -18,19 +18,12 @@ export default async function Home() {
         <div className="flex flex-1 overflow-hidden">
           {/* Left — headline */}
           <div className="flex flex-col justify-center px-8 md:px-16 py-12 flex-1 gap-8">
-            <div className="inline-flex items-center gap-2 self-start">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-              <span className="text-xs font-medium tracking-widest uppercase text-muted-foreground">
-                Open library
-              </span>
-            </div>
-
             <div className="flex flex-col gap-2">
-              <h1 className=" font-dancing-script text-[clamp(3rem,8vw,7rem)] leading-[0.9] text-foreground">
+              <h1 className=" text-6xl leading-[0.9] text-foreground">
                 Agent Skills
               </h1>
               <p className="text-[clamp(1.5rem,3.5vw,3rem)] leading-tight font-light text-foreground/60 tracking-tight">
-                for designers who build
+                for designers to build
                 <br />
                 with AI.
               </p>
@@ -41,25 +34,11 @@ export default async function Home() {
               digital designers — ready to drop into your AI agent of choice.
             </p>
 
-            <div className="flex items-center gap-6">
-              {categories.map((cat) => (
-                <div key={cat.name} className="flex flex-col gap-0.5">
-                  <span className="text-2xl font-semibold text-foreground tabular-nums">
-                    {cat.skills.length}
-                  </span>
-                  <span className="text-xs text-muted-foreground capitalize">
-                    {cat.displayName}
-                  </span>
-                </div>
-              ))}
-              <div className="flex flex-col gap-0.5">
-                <span className="text-2xl font-semibold text-foreground tabular-nums">
-                  {categories.reduce((acc, cat) => acc + cat.skills.length, 0)}
-                </span>
-                <span className="text-xs text-muted-foreground">
-                  Total skills
-                </span>
-              </div>
+            <div className="flex items-center gap-3">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-muted-foreground animate-bounce">
+                <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span className="text-xs text-muted-foreground tracking-widest uppercase">Scroll to browse</span>
             </div>
           </div>
 
