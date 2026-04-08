@@ -93,10 +93,14 @@ export default function SkillBrowser({
 }: {
   categories: Category[];
 }) {
+  const initialCategory =
+    categories.find((c) => c.name === "product") ?? categories[0] ?? null;
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    categories.find((c) => c.name === "product") ?? categories[0] ?? null,
+    initialCategory,
   );
-  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
+  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(
+    initialCategory?.skills[0] ?? null,
+  );
   const [mobilePanel, setMobilePanel] = useState<MobilePanel>("categories");
 
   function selectCategory(cat: Category) {
@@ -118,7 +122,7 @@ export default function SkillBrowser({
   ];
 
   return (
-    <div className="overflow-hidden md:px-3 md:py-2">
+    <div className="h-full overflow-hidden md:px-3 md:py-2">
       <div className="flex gap-2 mb-2">
         <Circle size={13} className="text-red-400 bg-red-400 rounded-full" />
         <Circle
