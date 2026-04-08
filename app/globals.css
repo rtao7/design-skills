@@ -28,6 +28,26 @@ body {
 }
 
 
+@utility font-dancing-script {
+  font-family: var(--font-dancing-script);
+}
+
+@utility font-caveat {
+  font-family: var(--font-caveat);
+}
+
+@utility font-great-vibes {
+  font-family: var(--font-great-vibes);
+}
+
+@utility font-pacifico {
+  font-family: var(--font-pacifico);
+}
+
+@utility font-satisfy {
+  font-family: var(--font-satisfy);
+}
+
 /* cmdk group headings */
 [cmdk-group-heading] {
   padding: 0.375rem 0.5rem;

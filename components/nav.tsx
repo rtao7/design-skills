@@ -4,6 +4,7 @@ import type { Category } from "@/lib/skills";
 import Logo from "@/public/logo.svg";
 import Image from "next/image";
 import { Paperclip, PlusCircle } from "lucide-react";
+import { GeistPixelSquare } from "geist/font/pixel";
 
 export default function Nav({ categories = [] }: { categories?: Category[] }) {
   return (
@@ -12,7 +13,7 @@ export default function Nav({ categories = [] }: { categories?: Category[] }) {
         <div className="flex items-center gap-4 min-w-0 flex-1">
           <Link
             href="/"
-            className="flex gap-4 items-center text-sm font-sans font-semibold text-foreground shrink-0"
+            className={`flex gap-4 items-center text font-bold text-foreground shrink-0 ${GeistPixelSquare.className}`}
           >
             <svg
               width="34"
@@ -190,12 +191,8 @@ export default function Nav({ categories = [] }: { categories?: Category[] }) {
                 </linearGradient>
               </defs>
             </svg>
-            Designer Skills
+            Design Skills
           </Link>
-          <span className="text-border hidden sm:block">|</span>
-          <p className="text-sm text-muted-foreground hidden sm:block truncate">
-            A small library of Agent skills for designers
-          </p>
         </div>
 
         <div className="shrink-0">
