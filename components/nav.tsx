@@ -12,7 +12,7 @@ export default function Nav({ categories = [] }: { categories?: Category[] }) {
         <div className="flex items-center gap-4 min-w-0 flex-1">
           <Link
             href="/"
-            className="flex gap-4 items-center text-sm font-sans font-bold text-foreground shrink-0"
+            className="flex gap-4 items-center text-sm font-sans font-semibold text-foreground shrink-0"
           >
             <svg
               width="34"
@@ -68,7 +68,7 @@ export default function Nav({ categories = [] }: { categories?: Category[] }) {
                   d="M13.8271 16.4849C14.0191 17.7811 13.124 18.9877 11.8278 19.1797C10.5315 19.3718 9.32497 18.4767 9.13289 17.1804"
                   stroke="url(#paint4_linear_67_2447)"
                   strokeWidth="2"
-                  stroke-linecap="round"
+                  strokeLinecap="round"
                 />
                 <circle
                   cx="14.3855"
@@ -77,7 +77,7 @@ export default function Nav({ categories = [] }: { categories?: Category[] }) {
                   transform="rotate(6.19549 14.3855 11.3392)"
                   fill="url(#paint5_linear_67_2447)"
                   stroke="#F8F4F2"
-                  stroke-width="3"
+                  strokeWidth="3"
                 />
               </g>
               <defs>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FileText, ChevronRight, ChevronLeft } from "lucide-react";
+import { FileText, ChevronRight, ChevronLeft, Circle } from "lucide-react";
 import type { Category, Skill } from "@/lib/skills";
 import SkillViewer from "@/components/skill-viewer";
 
@@ -118,174 +118,187 @@ export default function SkillBrowser({
   ];
 
   return (
-    <div className="flex h-[calc(100dvh-56px)] overflow-hidden border-t border-border bg-background">
-      {/* ── Column 1 — Categories ── */}
-      <div
-        className={`
+    <div className="overflow-hidden md:px-3 md:py-2">
+      <div className="flex gap-2 mb-2">
+        <Circle size={13} className="text-red-400 bg-red-400 rounded-full" />
+        <Circle
+          size={13}
+          className="text-yellow-400 bg-yellow-400 rounded-full"
+        />
+        <Circle
+          size={13}
+          className="text-green-400 bg-green-400 rounded-full"
+        />
+      </div>
+      <div className="flex h-full overflow-hidden border border-border rounded bg-background">
+        {/* ── Column 1 — Categories ── */}
+        <div
+          className={`
           w-full md:w-48 md:flex shrink-0 flex-col
           border-r border-border overflow-y-auto bg-[#F4F2EE]
           ${mobilePanel === "categories" ? "flex" : "hidden"}
         `}
-      >
-        <div className="px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-widest border-b border-border sticky top-0 bg-[#F4F2EE]">
-          Categories
-        </div>
-        <div className="flex flex-col gap-2 p-4">
-          {sortedCategories.map((cat) => {
-            const isSelected = selectedCategory?.name === cat.name;
-            return (
-              <button
-                key={cat.name}
-                onClick={() => selectCategory(cat)}
-                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all duration-150 ${
-                  isSelected
-                    ? "bg-white/80 ring-1 ring-accent/40"
-                    : "hover:bg-white/60"
-                }`}
-              >
-                <FolderShape isSelected={isSelected} />
-                <div className="text-center leading-tight">
-                  <div
-                    className={`text-xs font-medium ${isSelected ? "text-accent" : "text-foreground"}`}
-                  >
-                    {cat.displayName}
+        >
+          <div className="px-4 py-3 text-xs font-medium text-muted-foreground uppercase tracking-widest border-b border-border sticky top-0 bg-[#F4F2EE]">
+            Categories
+          </div>
+          <div className="flex flex-col gap-2 p-4">
+            {sortedCategories.map((cat) => {
+              const isSelected = selectedCategory?.name === cat.name;
+              return (
+                <button
+                  key={cat.name}
+                  onClick={() => selectCategory(cat)}
+                  className={`flex flex-col items-center gap-1.5 p-3 rounded-xl transition-all duration-150 ${
+                    isSelected
+                      ? "bg-white/80 ring-1 ring-accent/40"
+                      : "hover:bg-white/60"
+                  }`}
+                >
+                  <FolderShape isSelected={isSelected} />
+                  <div className="text-center leading-tight">
+                    <div
+                      className={`text-xs font-medium ${isSelected ? "text-accent" : "text-foreground"}`}
+                    >
+                      {cat.displayName}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground">
+                      {cat.skills.length}{" "}
+                      {cat.skills.length === 1 ? "skill" : "skills"}
+                    </div>
                   </div>
-                  <div className="text-[10px] text-muted-foreground">
-                    {cat.skills.length}{" "}
-                    {cat.skills.length === 1 ? "skill" : "skills"}
-                  </div>
-                </div>
-              </button>
-            );
-          })}
+                </button>
+              );
+            })}
 
-          {PLACEHOLDER_FOLDERS.map((placeholder) => (
-            <div
-              key={placeholder.name}
-              className="flex flex-col items-center gap-1.5 p-3 rounded-xl opacity-60 cursor-default"
-            >
-              <FolderShape isSelected={false} />
-              <div className="text-center leading-tight">
-                <div className="text-xs font-medium text-foreground">
-                  {placeholder.displayName}
-                </div>
-                <div className="text-[10px] text-accent/80 font-medium">
-                  Coming soon
+            {PLACEHOLDER_FOLDERS.map((placeholder) => (
+              <div
+                key={placeholder.name}
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl opacity-60 cursor-default"
+              >
+                <FolderShape isSelected={false} />
+                <div className="text-center leading-tight">
+                  <div className="text-xs font-medium text-foreground">
+                    {placeholder.displayName}
+                  </div>
+                  <div className="text-[10px] text-accent/80 font-medium">
+                    Coming soon
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      {/* ── Column 2 — Skills ── */}
-      <div
-        className={`
+        {/* ── Column 2 — Skills ── */}
+        <div
+          className={`
           w-full md:w-64 md:flex shrink-0 flex-col
           border-r border-border overflow-y-auto
           ${mobilePanel === "skills" ? "flex" : "hidden"}
         `}
-      >
-        {/* Back button — mobile only */}
-        <button
-          onClick={() => setMobilePanel("categories")}
-          className="md:hidden flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium text-accent border-b border-border sticky top-0 bg-background hover:bg-muted transition-colors"
         >
-          <ChevronLeft className="w-3.5 h-3.5" />
-          Categories
-        </button>
+          {/* Back button — mobile only */}
+          <button
+            onClick={() => setMobilePanel("categories")}
+            className="md:hidden flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium text-accent border-b border-border sticky top-0 bg-background hover:bg-muted transition-colors"
+          >
+            <ChevronLeft className="w-3.5 h-3.5" />
+            Categories
+          </button>
 
-        {selectedCategory ? (
-          <>
-            <div className="px-3 py-3 text-xs font-medium text-muted-foreground uppercase tracking-widest sticky top-0 bg-background hidden md:block">
-              Skills
+          {selectedCategory ? (
+            <>
+              <div className="px-3 py-3 text-xs font-medium text-muted-foreground uppercase tracking-widest sticky top-0 bg-background hidden md:block">
+                Skills
+              </div>
+              {selectedCategory.skills.map((skill) => {
+                const isSelected =
+                  selectedSkill?.slug === skill.slug &&
+                  selectedSkill?.category === skill.category;
+                return (
+                  <button
+                    key={skill.slug}
+                    onClick={() => selectSkill(skill)}
+                    className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-left transition-colors ${
+                      isSelected
+                        ? "bg-accent text-white"
+                        : "text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    <FileText
+                      className={`w-4 h-4 shrink-0 ${isSelected ? "" : "text-muted-foreground"}`}
+                    />
+                    <span className="flex-1 truncate">{skill.title}</span>
+                    {isSelected && (
+                      <ChevronRight className="w-3.5 h-3.5 shrink-0" />
+                    )}
+                  </button>
+                );
+              })}
+            </>
+          ) : (
+            <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+              Select a category
             </div>
-            {selectedCategory.skills.map((skill) => {
-              const isSelected =
-                selectedSkill?.slug === skill.slug &&
-                selectedSkill?.category === skill.category;
-              return (
-                <button
-                  key={skill.slug}
-                  onClick={() => selectSkill(skill)}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-left transition-colors ${
-                    isSelected
-                      ? "bg-accent text-white"
-                      : "text-foreground hover:bg-muted"
-                  }`}
-                >
-                  <FileText
-                    className={`w-4 h-4 shrink-0 ${isSelected ? "" : "text-muted-foreground"}`}
-                  />
-                  <span className="flex-1 truncate">{skill.title}</span>
-                  {isSelected && (
-                    <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-                  )}
-                </button>
-              );
-            })}
-          </>
-        ) : (
-          <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
-            Select a category
-          </div>
-        )}
-      </div>
+          )}
+        </div>
 
-      {/* ── Column 3 — Detail ── */}
-      <div
-        className={`
+        {/* ── Column 3 — Detail ── */}
+        <div
+          className={`
           flex-1 w-full md:flex flex-col overflow-y-auto
           ${mobilePanel === "detail" ? "flex" : "hidden"}
         `}
-      >
-        {/* Back button — mobile only */}
-        {selectedSkill && (
-          <button
-            onClick={() => setMobilePanel("skills")}
-            className="md:hidden flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium text-accent border-b border-border sticky top-0 bg-background hover:bg-muted transition-colors z-10"
-          >
-            <ChevronLeft className="w-3.5 h-3.5" />
-            {selectedCategory?.displayName}
-          </button>
-        )}
+        >
+          {/* Back button — mobile only */}
+          {selectedSkill && (
+            <button
+              onClick={() => setMobilePanel("skills")}
+              className="md:hidden flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium text-accent border-b border-border sticky top-0 bg-background hover:bg-muted transition-colors z-10"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              {selectedCategory?.displayName}
+            </button>
+          )}
 
-        {selectedSkill ? (
-          <div className="p-6 md:p-8 lg:p-12 max-w-full">
-            <div className="mb-8 pb-6">
-              <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-2 leading-tight font-serif">
-                {selectedSkill.title}
-              </h1>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                {selectedSkill.description}
-              </p>
-              {selectedSkill.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {selectedSkill.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs px-2.5 py-1 bg-muted text-muted-foreground rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
+          {selectedSkill ? (
+            <div className="p-6 md:p-8 lg:p-12 max-w-full">
+              <div className="mb-8 pb-6">
+                <h1 className="text-2xl md:text-3xl font-semibold text-foreground mb-2 leading-tight font-serif">
+                  {selectedSkill.title}
+                </h1>
+                <p className="text-muted-foreground text-sm leading-relaxed mb-4">
+                  {selectedSkill.description}
+                </p>
+                {selectedSkill.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedSkill.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="text-xs px-2.5 py-1 bg-muted text-muted-foreground rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <SkillViewer
+                skill={{
+                  raw: selectedSkill.raw,
+                  body: selectedSkill.body,
+                  slug: selectedSkill.slug,
+                }}
+              />
             </div>
-            <SkillViewer
-              skill={{
-                raw: selectedSkill.raw,
-                body: selectedSkill.body,
-                slug: selectedSkill.slug,
-              }}
-            />
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center h-full gap-2 text-muted-foreground">
-            <FileText className="w-8 h-8 opacity-30" />
-            <p className="text-sm">Select a skill to preview</p>
-          </div>
-        )}
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full gap-2 text-muted-foreground">
+              <FileText className="w-8 h-8 opacity-30" />
+              <p className="text-sm">Select a skill to preview</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

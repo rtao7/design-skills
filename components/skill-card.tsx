@@ -10,7 +10,7 @@ export default function SkillCard({ skill }: { skill: Skill }) {
       <h3 className="font-display font-semibold text-foreground text-lg mb-2 group-hover:text-accent transition-colors leading-snug">
         {skill.title}
       </h3>
-      <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-2">
+      <p className="text-muted-foreground leading-relaxed mb-4 line-clamp-2">
         {skill.description}
       </p>
       {skill.tags.length > 0 && (
