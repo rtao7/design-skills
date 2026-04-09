@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FileText, ChevronRight, ChevronLeft, Circle } from "lucide-react";
+import { FileText, ChevronRight, ChevronLeft, Circle, Folder } from "lucide-react";
 import type { Category, Skill } from "@/lib/skills";
 import SkillViewer from "@/components/skill-viewer";
 
@@ -95,18 +95,30 @@ export default function SkillBrowser({
 }) {
   const initialCategory =
     categories.find((c) => c.name === "product") ?? categories[0] ?? null;
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    initialCategory,
-  );
-  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(
-    initialCategory?.skills[0] ?? null,
+  const initialSkill =
+    initialCategory?.skills[0] ?? initialCategory?.folders[0]?.skills[0] ?? null;
+
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(initialCategory);
+  const [selectedSkill, setSelectedSkill] = useState<Skill | null>(initialSkill);
+  const [openFolders, setOpenFolders] = useState<Set<string>>(
+    new Set(initialSkill?.folder ? [initialSkill.folder] : [])
   );
   const [mobilePanel, setMobilePanel] = useState<MobilePanel>("categories");
 
   function selectCategory(cat: Category) {
+    const firstSkill = cat.skills[0] ?? cat.folders[0]?.skills[0] ?? null;
     setSelectedCategory(cat);
-    setSelectedSkill(null);
+    setSelectedSkill(firstSkill);
+    setOpenFolders(new Set(firstSkill?.folder ? [firstSkill.folder] : []));
     setMobilePanel("skills");
+  }
+
+  function toggleFolder(folderName: string) {
+    setOpenFolders((prev) => {
+      const next = new Set(prev);
+      next.has(folderName) ? next.delete(folderName) : next.add(folderName);
+      return next;
+    });
   }
 
   function selectSkill(skill: Skill) {
@@ -167,8 +179,8 @@ export default function SkillBrowser({
                       {cat.displayName}
                     </div>
                     <div className="text-[10px] text-muted-foreground">
-                      {cat.skills.length}{" "}
-                      {cat.skills.length === 1 ? "skill" : "skills"}
+                      {cat.skills.length + cat.folders.reduce((acc, f) => acc + f.skills.length, 0)}{" "}
+                      {cat.skills.length + cat.folders.reduce((acc, f) => acc + f.skills.length, 0) === 1 ? "skill" : "skills"}
                     </div>
                   </div>
                 </button>
@@ -216,9 +228,12 @@ export default function SkillBrowser({
               <div className="px-3 py-3 text-xs font-medium text-muted-foreground uppercase tracking-widest sticky top-0 bg-background hidden md:block">
                 Skills
               </div>
+
+              {/* Top-level skills */}
               {selectedCategory.skills.map((skill) => {
                 const isSelected =
                   selectedSkill?.slug === skill.slug &&
+                  selectedSkill?.folder === skill.folder &&
                   selectedSkill?.category === skill.category;
                 return (
                   <button
@@ -234,10 +249,50 @@ export default function SkillBrowser({
                       className={`w-4 h-4 shrink-0 ${isSelected ? "" : "text-muted-foreground"}`}
                     />
                     <span className="flex-1 truncate">{skill.title}</span>
-                    {isSelected && (
-                      <ChevronRight className="w-3.5 h-3.5 shrink-0" />
-                    )}
+                    {isSelected && <ChevronRight className="w-3.5 h-3.5 shrink-0" />}
                   </button>
+                );
+              })}
+
+              {/* Subfolders */}
+              {selectedCategory.folders.map((folder) => {
+                const isOpen = openFolders.has(folder.name);
+                return (
+                  <div key={folder.name}>
+                    <button
+                      onClick={() => toggleFolder(folder.name)}
+                      className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm text-left text-foreground hover:bg-muted transition-colors"
+                    >
+                      <Folder className="w-4 h-4 shrink-0 text-muted-foreground" />
+                      <span className="flex-1 truncate">{folder.displayName}</span>
+                      <ChevronRight
+                        className={`w-3.5 h-3.5 shrink-0 text-muted-foreground transition-transform duration-150 ${isOpen ? "rotate-90" : ""}`}
+                      />
+                    </button>
+                    {isOpen && folder.skills.map((skill) => {
+                      const isSelected =
+                        selectedSkill?.slug === skill.slug &&
+                        selectedSkill?.folder === skill.folder &&
+                        selectedSkill?.category === skill.category;
+                      return (
+                        <button
+                          key={skill.slug}
+                          onClick={() => selectSkill(skill)}
+                          className={`w-full flex items-center gap-2.5 pl-8 pr-3 py-2.5 text-sm text-left transition-colors ${
+                            isSelected
+                              ? "bg-accent text-white"
+                              : "text-foreground hover:bg-muted"
+                          }`}
+                        >
+                          <FileText
+                            className={`w-4 h-4 shrink-0 ${isSelected ? "" : "text-muted-foreground"}`}
+                          />
+                          <span className="flex-1 truncate">{skill.title}</span>
+                          {isSelected && <ChevronRight className="w-3.5 h-3.5 shrink-0" />}
+                        </button>
+                      );
+                    })}
+                  </div>
                 );
               })}
             </>

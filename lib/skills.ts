@@ -7,15 +7,23 @@ export type Skill = {
   description: string;
   tags: string[];
   category: string;
+  folder?: string;
   slug: string;
   raw: string;
   body: string;
+};
+
+export type Folder = {
+  name: string;
+  displayName: string;
+  skills: Skill[];
 };
 
 export type Category = {
   name: string;
   displayName: string;
   skills: Skill[];
+  folders: Folder[];
 };
 
 const SKILLS_DIR = path.join(process.cwd(), 'skills');
@@ -27,6 +35,21 @@ function toDisplayName(name: string): string {
     .join(' ');
 }
 
+async function readSkillFile(filePath: string, category: string, slug: string, folder?: string): Promise<Skill> {
+  const raw = await fs.readFile(filePath, 'utf-8');
+  const { data, content } = matter(raw);
+  return {
+    title: data.title ?? slug,
+    description: data.description ?? '',
+    tags: data.tags ?? [],
+    category,
+    folder,
+    slug,
+    raw,
+    body: content,
+  };
+}
+
 export async function getAllCategories(): Promise<Category[]> {
   const entries = await fs.readdir(SKILLS_DIR, { withFileTypes: true });
   const categories: Category[] = [];
@@ -36,27 +59,34 @@ export async function getAllCategories(): Promise<Category[]> {
 
     const category = entry.name;
     const categoryPath = path.join(SKILLS_DIR, category);
-    const files = await fs.readdir(categoryPath);
+    const items = await fs.readdir(categoryPath, { withFileTypes: true });
     const skills: Skill[] = [];
+    const folders: Folder[] = [];
 
-    for (const file of files) {
-      if (!file.endsWith('.md')) continue;
-      const slug = file.replace(/\.md$/, '');
-      const raw = await fs.readFile(path.join(categoryPath, file), 'utf-8');
-      const { data, content } = matter(raw);
-      skills.push({
-        title: data.title ?? slug,
-        description: data.description ?? '',
-        tags: data.tags ?? [],
-        category,
-        slug,
-        raw,
-        body: content,
-      });
+    for (const item of items) {
+      if (item.isFile() && item.name.endsWith('.md')) {
+        const slug = item.name.replace(/\.md$/, '');
+        skills.push(await readSkillFile(path.join(categoryPath, item.name), category, slug));
+      } else if (item.isDirectory()) {
+        const folderName = item.name;
+        const folderPath = path.join(categoryPath, folderName);
+        const folderFiles = await fs.readdir(folderPath);
+        const folderSkills: Skill[] = [];
+
+        for (const file of folderFiles) {
+          if (!file.endsWith('.md')) continue;
+          const slug = file.replace(/\.md$/, '');
+          folderSkills.push(await readSkillFile(path.join(folderPath, file), category, slug, folderName));
+        }
+
+        if (folderSkills.length > 0) {
+          folders.push({ name: folderName, displayName: toDisplayName(folderName), skills: folderSkills });
+        }
+      }
     }
 
-    if (skills.length > 0) {
-      categories.push({ name: category, displayName: toDisplayName(category), skills });
+    if (skills.length > 0 || folders.length > 0) {
+      categories.push({ name: category, displayName: toDisplayName(category), skills, folders });
     }
   }
 
@@ -64,27 +94,32 @@ export async function getAllCategories(): Promise<Category[]> {
 }
 
 export async function getSkill(category: string, slug: string): Promise<Skill | null> {
+  // Try top-level first
   try {
     const filePath = path.join(SKILLS_DIR, category, `${slug}.md`);
-    const raw = await fs.readFile(filePath, 'utf-8');
-    const { data, content } = matter(raw);
-    return {
-      title: data.title ?? slug,
-      description: data.description ?? '',
-      tags: data.tags ?? [],
-      category,
-      slug,
-      raw,
-      body: content,
-    };
-  } catch {
-    return null;
-  }
+    return await readSkillFile(filePath, category, slug);
+  } catch {}
+
+  // Search subfolders
+  try {
+    const categoryPath = path.join(SKILLS_DIR, category);
+    const items = await fs.readdir(categoryPath, { withFileTypes: true });
+    for (const item of items) {
+      if (!item.isDirectory()) continue;
+      try {
+        const filePath = path.join(categoryPath, item.name, `${slug}.md`);
+        return await readSkillFile(filePath, category, slug, item.name);
+      } catch {}
+    }
+  } catch {}
+
+  return null;
 }
 
 export async function getAllSkillPaths(): Promise<{ category: string; slug: string }[]> {
   const categories = await getAllCategories();
-  return categories.flatMap((c) =>
-    c.skills.map((s) => ({ category: s.category, slug: s.slug }))
-  );
+  return categories.flatMap((c) => [
+    ...c.skills.map((s) => ({ category: s.category, slug: s.slug })),
+    ...c.folders.flatMap((f) => f.skills.map((s) => ({ category: s.category, slug: s.slug }))),
+  ]);
 }
