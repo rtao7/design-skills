@@ -1,58 +1,25 @@
 import type { Metadata } from "next";
-import { Inter, Dancing_Script, Caveat, Great_Vibes, Pacifico, Satisfy } from "next/font/google";
-import { GeistPixelSquare } from "geist/font/pixel";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const dancingScript = Dancing_Script({
-  variable: "--font-dancing-script",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const caveat = Caveat({
-  variable: "--font-caveat",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const greatVibes = Great_Vibes({
-  variable: "--font-great-vibes",
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const pacifico = Pacifico({
-  variable: "--font-pacifico",
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const satisfy = Satisfy({
-  variable: "--font-satisfy",
-  weight: "400",
-  subsets: ["latin"],
-  display: "swap",
-});
+import { AppShell } from "@/components/layout/AppShell";
 
 export const metadata: Metadata = {
-  title: "Design Skills",
-  description: "AI skills for UX and product designers",
+  title: "dskill — AI Skills for Designers",
+  description: "AI skills, tools, news, and community for designers.",
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${GeistPixelSquare.variable} ${dancingScript.variable} ${caveat.variable} ${greatVibes.variable} ${pacifico.variable} ${satisfy.variable}`}>
-      <body className="bg-background text-foreground antialiased">{children}</body>
+    <html
+      lang="en"
+      className={`${GeistSans.variable} ${GeistMono.variable}`}
+    >
+      <body>
+        <AppShell>{children}</AppShell>
+      </body>
     </html>
   );
 }

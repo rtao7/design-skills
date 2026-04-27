@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { getAllSkillPaths, getSkill } from "@/lib/skills";
-import Nav from "@/components/nav";
 import Breadcrumb from "@/components/breadcrumb";
 import SkillViewer from "@/components/skill-viewer";
 
@@ -37,8 +36,7 @@ export default async function SkillPage({
     .join(" ");
 
   return (
-    <div className="min-h-screen bg-background">
-      <Nav />
+    <div>
       <main className="max-w-3xl mx-auto px-6 py-10">
         <div className="mb-8">
           <Breadcrumb
@@ -79,4 +77,5 @@ export default async function SkillPage({
       </main>
     </div>
   );
+
 }
