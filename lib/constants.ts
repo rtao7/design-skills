@@ -19,7 +19,6 @@ export type NavItem = {
 export const NAV_DISCOVER: NavItem[] = [
   { label: 'Skills',     href: '/skills',     icon: '⚡', status: 'live' },
   { label: 'Resources',  href: '/resources',  icon: '🗂️', status: 'coming-soon' },
-  { label: 'News',       href: '/news',       icon: '📰', status: 'coming-soon' },
   { label: 'Community',  href: '/community',  icon: '🔥', status: 'coming-soon' },
 ];
 

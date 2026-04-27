@@ -6,9 +6,9 @@ import { Zap, FolderOpen, Newspaper, Flame } from 'lucide-react';
 import { useBreakpoint } from '@/hooks/use-breakpoint';
 
 const NAV_ITEMS = [
+  { href: '/news',      label: 'News',      Icon: Newspaper,  comingSoon: false },
   { href: '/skills',    label: 'Skills',    Icon: Zap,        comingSoon: false },
   { href: '/resources', label: 'Resources', Icon: FolderOpen, comingSoon: true  },
-  { href: '/news',      label: 'News',      Icon: Newspaper,  comingSoon: true  },
   { href: '/community', label: 'Community', Icon: Flame,      comingSoon: true  },
 ];
 
