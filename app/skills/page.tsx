@@ -18,7 +18,7 @@ export default async function SkillsPage() {
   return (
     <div
       style={{
-        padding: '36px 32px',
+        padding: 'clamp(20px, 4vw, 36px) clamp(16px, 4vw, 32px)',
         maxWidth: '900px',
       }}
     >

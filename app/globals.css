@@ -112,12 +112,22 @@
 
 /* cmdk group headings */
 [cmdk-group-heading] {
-  padding: 0.375rem 0.5rem;
-  font-size: 0.7rem;
+  padding: 0.375rem 0.625rem;
+  font-size: 10px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--muted-foreground);
+  color: var(--color-text-muted);
+}
+
+/* cmdk selected item highlight */
+[cmdk-item][aria-selected='true'] {
+  background: var(--color-bg-elevated);
+  color: var(--color-text-primary);
+}
+
+[cmdk-item] {
+  transition: background 100ms ease;
 }
 
 .dark {
@@ -171,6 +181,29 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  /* Keyboard focus rings */
+  :focus-visible {
+    outline: 2px solid var(--color-border-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Mobile: add bottom padding so content doesn't hide behind BottomNav */
+  @media (max-width: 767px) {
+    main {
+      padding-bottom: 56px;
+    }
+  }
+}
+
+/* Skeleton pulse animation */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+.skeleton-pulse {
+  animation: skeleton-pulse 1.6s ease-in-out infinite;
 }
 
 /* Sidebar starts below the global nav */

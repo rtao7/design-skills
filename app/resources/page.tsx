@@ -1,14 +1,20 @@
+import { ComingSoonState } from '@/components/ui/ComingSoonState';
+
 export const metadata = {
-  title: "Resources — dskill",
-  description: "Design tools, articles, Figma plugins, and inspiration.",
+  title: 'Resources — dskill',
+  description: 'Design tools, articles, Figma plugins, and UI inspiration.',
 };
 
 export default function ResourcesPage() {
   return (
-    <div style={{ padding: '40px 32px' }}>
-      <p style={{ color: 'var(--color-text-muted)', fontSize: '14px' }}>
-        Resources — coming soon
-      </p>
-    </div>
+    <ComingSoonState
+      icon="🗂️"
+      heading="Resources are coming"
+      body="Tools, articles, Figma plugins, and UI inspiration — all in one place."
+      ctaLabel="Notify me →"
+      ctaHref="#"
+      backLabel="← Back to Skills"
+      backHref="/skills"
+    />
   );
 }

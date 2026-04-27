@@ -110,11 +110,11 @@ export function SkillsFeed({ categories, totalCount }: SkillsFeedProps) {
         })}
       </div>
 
-      {/* 2-col grid */}
+      {/* Responsive grid: 1-col mobile → 2-col tablet+ */}
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
           gap: '16px',
         }}
       >

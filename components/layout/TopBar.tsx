@@ -1,8 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { useCommandPalette } from '@/components/overlays/CommandPaletteContext';
 
 export function TopBar() {
+  const { openPalette } = useCommandPalette();
+
   return (
     <header
       style={{
@@ -53,6 +56,7 @@ export function TopBar() {
 
       {/* Search trigger */}
       <button
+        onClick={openPalette}
         style={{
           flex: 1,
           maxWidth: '360px',

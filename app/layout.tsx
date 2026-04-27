@@ -6,7 +6,17 @@ import { AppShell } from "@/components/layout/AppShell";
 
 export const metadata: Metadata = {
   title: "dskill — AI Skills for Designers",
-  description: "AI skills, tools, news, and community for designers.",
+  description: "Curated AI skills, tools, news, and community for UX and product designers.",
+  openGraph: {
+    title: "dskill — AI Skills for Designers",
+    description: "Curated AI skills, tools, news, and community for UX and product designers.",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "dskill — AI Skills for Designers",
+    description: "Curated AI skills, tools, news, and community for UX and product designers.",
+  },
 };
 
 export default function RootLayout({

@@ -1,14 +1,20 @@
+import { ComingSoonState } from '@/components/ui/ComingSoonState';
+
 export const metadata = {
-  title: "Community — dskill",
-  description: "Designer picks, upvoted by the community.",
+  title: 'Community — dskill',
+  description: 'Designer picks, upvoted by the community.',
 };
 
 export default function CommunityPage() {
   return (
-    <div style={{ padding: '40px 32px' }}>
-      <p style={{ color: 'var(--color-text-muted)', fontSize: '14px' }}>
-        Community — coming soon
-      </p>
-    </div>
+    <ComingSoonState
+      icon="🔥"
+      heading="Community launches soon"
+      body="Designer picks, upvoted by the community."
+      ctaLabel="Notify me →"
+      ctaHref="#"
+      backLabel="← Back to Skills"
+      backHref="/skills"
+    />
   );
 }

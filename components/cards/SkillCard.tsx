@@ -8,6 +8,7 @@ import { TagBadge } from '@/components/ui/TagBadge';
 import { CopyButton } from '@/components/ui/CopyButton';
 import { ActionButton } from '@/components/ui/ActionButton';
 import { useDetailPanel } from '@/components/overlays/DetailPanelContext';
+import { SaveButton } from '@/components/ui/SaveButton';
 
 type SkillCardProps = {
   skill: Skill;
@@ -132,6 +133,7 @@ export function SkillCard({ skill }: SkillCardProps) {
           onClick={() => openPanel(skill)}
           title="Preview skill"
         />
+        <SaveButton itemId={`skill:${skill.category}/${skill.slug}`} />
       </div>
     </div>
   );
