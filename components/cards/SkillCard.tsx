@@ -69,11 +69,34 @@ export function SkillCard({ skill }: SkillCardProps) {
           fontSize: '14px',
           fontWeight: 600,
           color: 'var(--color-text-primary)',
-          marginBottom: '8px',
+          marginBottom: '6px',
           letterSpacing: '-0.01em',
         }}
       >
         {skill.slug}
+      </div>
+
+      {/* Author */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '10px' }}>
+        <div
+          style={{
+            width: '18px',
+            height: '18px',
+            borderRadius: '50%',
+            background: 'var(--color-bg-elevated)',
+            border: '1px solid var(--color-border-subtle)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '9px',
+            fontWeight: 600,
+            color: 'var(--color-text-muted)',
+            flexShrink: 0,
+          }}
+        >
+          A
+        </div>
+        <span style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>Author</span>
       </div>
 
       {/* Description — 2-line clamp */}

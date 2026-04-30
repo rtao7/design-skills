@@ -69,8 +69,8 @@ export function ContextBar({ newsCount, skillCount }: ContextBarProps) {
           <span
             style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}
           >
-            Save skills, news &amp; inspirations you love — sign in to build
-            your personal library.
+            Join mailing list to get updates on new skills, design news &amp;
+            inspirations you love.
           </span>
         </div>
 
@@ -87,7 +87,7 @@ export function ContextBar({ newsCount, skillCount }: ContextBarProps) {
             flexShrink: 0,
           }}
         >
-          Sign in
+          Subscribe
         </button>
       </div>
     </div>
