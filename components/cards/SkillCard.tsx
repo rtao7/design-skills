@@ -57,8 +57,8 @@ export function SkillCard({ skill }: SkillCardProps) {
         <CategoryBadge category={displayCategory} />
         <ActionButton
           icon={<ExternalLink size={13} />}
-          href={skillUrl}
           title="Open skill"
+          disabled
         />
       </div>
 

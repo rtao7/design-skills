@@ -1,5 +1,7 @@
 import { getApprovedNews } from '@/lib/news';
+import { getAllCategories } from '@/lib/skills';
 import { NewsFeed } from '@/components/cards/NewsFeed';
+import { ContextBar } from '@/components/home/ContextBar';
 
 export const revalidate = 3600;
 
@@ -9,33 +11,19 @@ export const metadata = {
 };
 
 export default async function HomePage() {
-  const items = await getApprovedNews(30);
+  const [categories, items] = await Promise.all([
+    getAllCategories(),
+    getApprovedNews(30),
+  ]);
+
+  const skillCount = categories.flatMap((cat) => [
+    ...cat.skills,
+    ...cat.folders.flatMap((f) => f.skills),
+  ]).length;
 
   return (
     <main style={{ padding: 'clamp(20px, 4vw, 36px) clamp(16px, 4vw, 32px)' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <h1
-          style={{
-            fontSize: '20px',
-            fontWeight: 600,
-            color: 'var(--color-text-primary)',
-            margin: 0,
-          }}
-        >
-          Design News
-        </h1>
-        <p
-          style={{
-            fontSize: '13px',
-            color: 'var(--color-text-muted)',
-            marginTop: '4px',
-            marginBottom: 0,
-          }}
-        >
-          {items.length} stories
-        </p>
-      </div>
-
+      <ContextBar newsCount={items.length} skillCount={skillCount} />
       <NewsFeed items={items} />
     </main>
   );

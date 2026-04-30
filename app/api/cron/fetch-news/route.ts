@@ -3,6 +3,40 @@ import Parser from 'rss-parser'
 import { supabaseAdmin } from '@/lib/supabase'
 import { RSS_SOURCES } from '@/lib/rss-sources'
 
+async function scrapeOgImage(url: string): Promise<string | null> {
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; dskill-bot/1.0)' },
+      signal: AbortSignal.timeout(8000),
+    })
+    if (!res.ok) return null
+    const html = await res.text()
+
+    const patterns = [
+      // og:image (property attr first or second)
+      /<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i,
+      /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i,
+      // og:image:url
+      /<meta[^>]+property=["']og:image:url["'][^>]+content=["']([^"']+)["']/i,
+      /<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image:url["']/i,
+      // twitter:image (name attr)
+      /<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i,
+      /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i,
+      // twitter:image:src
+      /<meta[^>]+name=["']twitter:image:src["'][^>]+content=["']([^"']+)["']/i,
+      /<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image:src["']/i,
+    ]
+
+    for (const pattern of patterns) {
+      const match = html.match(pattern)
+      if (match?.[1]) return match[1]
+    }
+    return null
+  } catch {
+    return null
+  }
+}
+
 const parser = new Parser({
   customFields: {
     item: [
@@ -31,7 +65,7 @@ export async function GET(req: NextRequest) {
           (item as any).mediaContent?.$.url ||
           (item as any).mediaThumbnail?.$.url ||
           item.enclosure?.url ||
-          null
+          await scrapeOgImage(item.link)
 
         const { error } = await supabaseAdmin
           .from('news_items')

@@ -27,8 +27,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { NAV_DISCOVER, NAV_LIBRARY, CATEGORY_COLORS } from '@/lib/constants';
-import { RSS_SOURCES } from '@/lib/rss-sources';
+import { NAV_DISCOVER, NAV_LIBRARY } from '@/lib/constants';
 import { useBreakpoint } from '@/hooks/use-breakpoint';
 
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -39,13 +38,6 @@ const ICON_MAP: Record<string, LucideIcon> = {
   '/community': Flame,
   '/saved':     Star,
 };
-
-const SKILL_CATEGORIES = [
-  { name: 'Product' },
-  { name: 'Design' },
-  { name: 'Handoff' },
-  { name: 'Presentation' },
-] as const;
 
 const ACTIVE_CLASS =
   'data-[active=true]:border-l-2 data-[active=true]:border-[#7B61FF] data-[active=true]:rounded-l-none';
@@ -63,11 +55,6 @@ export function Sidebar() {
     }
     return pathname === href || pathname.startsWith(href + '/');
   };
-
-  const isFilterable =
-    pathname === '/skills' || pathname.startsWith('/skills/');
-
-  const isNewsFeed = pathname === '/' || pathname === '/news';
 
   // Mobile: sidebar hidden, BottomNav takes over
   if (bp === 'mobile') return null;
@@ -267,80 +254,6 @@ export function Sidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Sources — only on news feed */}
-        {isNewsFeed && (
-          <SidebarGroup>
-            <SidebarGroupLabel>Sources</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {[{ name: 'All' }, ...RSS_SOURCES].map((source) => (
-                  <SidebarMenuItem key={source.name}>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        padding: '6px 12px',
-                        fontSize: '13px',
-                        color: 'var(--color-text-secondary)',
-                      }}
-                    >
-                      <span
-                        style={{
-                          width: '6px',
-                          height: '6px',
-                          borderRadius: '50%',
-                          background: 'var(--color-text-muted)',
-                          flexShrink: 0,
-                        }}
-                      />
-                      <span>{source.name}</span>
-                    </div>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
-
-        {/* Filter — only on skill pages */}
-        {isFilterable && (
-          <SidebarGroup>
-            <SidebarGroupLabel>Filter</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {SKILL_CATEGORIES.map((cat) => {
-                  const colors = CATEGORY_COLORS[cat.name];
-                  return (
-                    <SidebarMenuItem key={cat.name}>
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '8px',
-                          padding: '6px 12px',
-                          fontSize: '13px',
-                          color: 'var(--color-text-secondary)',
-                        }}
-                      >
-                        <span
-                          style={{
-                            width: '6px',
-                            height: '6px',
-                            borderRadius: '50%',
-                            background: colors.dot,
-                            flexShrink: 0,
-                          }}
-                        />
-                        <span>{cat.name}</span>
-                      </div>
-                    </SidebarMenuItem>
-                  );
-                })}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        )}
 
       </SidebarContent>
     </SidebarRoot>
