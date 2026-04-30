@@ -37,6 +37,7 @@ export type NewsItem = {
   publishedAt: string;
   tags: string[];
   origin: 'manual' | 'rss';
+  likes: number;
 };
 
 export type CommunityPost = {

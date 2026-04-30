@@ -3,7 +3,14 @@ import Parser from 'rss-parser'
 import { supabaseAdmin } from '@/lib/supabase'
 import { RSS_SOURCES } from '@/lib/rss-sources'
 
-const parser = new Parser()
+const parser = new Parser({
+  customFields: {
+    item: [
+      ['media:content', 'mediaContent', { keepArray: false }],
+      ['media:thumbnail', 'mediaThumbnail', { keepArray: false }],
+    ],
+  },
+})
 
 export async function GET(req: NextRequest) {
   const authHeader = req.headers.get('authorization')
@@ -20,6 +27,12 @@ export async function GET(req: NextRequest) {
       for (const item of feed.items.slice(0, 20)) {
         if (!item.title || !item.link) continue
 
+        const thumbnail =
+          (item as any).mediaContent?.$.url ||
+          (item as any).mediaThumbnail?.$.url ||
+          item.enclosure?.url ||
+          null
+
         const { error } = await supabaseAdmin
           .from('news_items')
           .upsert(
@@ -29,6 +42,7 @@ export async function GET(req: NextRequest) {
               source: source.name,
               source_favicon: source.favicon,
               description: item.contentSnippet?.slice(0, 300) || null,
+              thumbnail,
               published_at: item.pubDate ? new Date(item.pubDate) : new Date(),
               tags: source.defaultTags,
               origin: 'rss',

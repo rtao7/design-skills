@@ -5,12 +5,28 @@ export function NewsCardSkeleton() {
         background: 'var(--color-bg-surface)',
         border: '1px solid var(--color-border-subtle)',
         borderRadius: 'var(--radius-lg)',
-        padding: '16px',
         display: 'flex',
         flexDirection: 'column',
         gap: '10px',
+        overflow: 'hidden',
       }}
     >
+      {/* Thumbnail skeleton */}
+      <div
+        className="skeleton-pulse"
+        style={{
+          width: '100%',
+          aspectRatio: '16/9',
+          borderRadius: 0,
+          borderTopLeftRadius: 'var(--radius-lg)',
+          borderTopRightRadius: 'var(--radius-lg)',
+          background: 'var(--color-bg-elevated)',
+        }}
+      />
+
+      {/* Body */}
+      <div style={{ padding: '0 16px 16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+
       {/* Source row */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
         <div className="skeleton-pulse" style={{ width: '14px', height: '14px', borderRadius: '2px' }} />
@@ -37,9 +53,15 @@ export function NewsCardSkeleton() {
       </div>
 
       {/* Actions */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 'auto', paddingTop: '4px' }}>
+      <div style={{ display: 'flex', gap: '6px', marginTop: 'auto', paddingTop: '4px' }}>
         <div className="skeleton-pulse" style={{ width: '56px', height: '26px', borderRadius: 'var(--radius-sm)' }} />
-        <div className="skeleton-pulse" style={{ width: '26px', height: '26px', borderRadius: 'var(--radius-sm)' }} />
+        <div className="skeleton-pulse" style={{ width: '52px', height: '26px', borderRadius: 'var(--radius-sm)' }} />
+        <div className="skeleton-pulse" style={{ width: '64px', height: '26px', borderRadius: 'var(--radius-sm)' }} />
+        <div style={{ marginLeft: 'auto' }}>
+          <div className="skeleton-pulse" style={{ width: '26px', height: '26px', borderRadius: 'var(--radius-sm)' }} />
+        </div>
+      </div>
+
       </div>
     </div>
   );

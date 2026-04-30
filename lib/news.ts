@@ -12,6 +12,7 @@ type SupabaseNewsRow = {
   published_at: string
   tags: string[]
   origin: 'rss' | 'manual'
+  likes: number
 }
 
 function toNewsItem(row: SupabaseNewsRow): NewsItem {
@@ -27,15 +28,16 @@ function toNewsItem(row: SupabaseNewsRow): NewsItem {
     publishedAt: row.published_at,
     tags: row.tags,
     origin: row.origin,
+    likes: row.likes,
   }
 }
 
 export async function getApprovedNews(limit = 30): Promise<NewsItem[]> {
   const { data, error } = await supabase
     .from('news_items')
-    .select('id, title, url, source, source_favicon, description, thumbnail, published_at, tags, origin')
+    .select('id, title, url, source, source_favicon, description, thumbnail, published_at, tags, origin, likes')
     .eq('status', 'approved')
-    .order('published_at', { ascending: false })
+    .order('created_at', { ascending: false })
     .limit(limit)
 
   if (error) throw error
@@ -45,10 +47,10 @@ export async function getApprovedNews(limit = 30): Promise<NewsItem[]> {
 export async function getNewsBySource(source: string, limit = 20): Promise<NewsItem[]> {
   const { data, error } = await supabase
     .from('news_items')
-    .select('id, title, url, source, source_favicon, description, thumbnail, published_at, tags, origin')
+    .select('id, title, url, source, source_favicon, description, thumbnail, published_at, tags, origin, likes')
     .eq('status', 'approved')
     .eq('source', source)
-    .order('published_at', { ascending: false })
+    .order('created_at', { ascending: false })
     .limit(limit)
 
   if (error) throw error
