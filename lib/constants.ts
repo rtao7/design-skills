@@ -20,6 +20,8 @@ export const NAV_DISCOVER: NavItem[] = [
   { label: 'Skills',     href: '/skills',     icon: '⚡', status: 'live' },
   { label: 'Resources',  href: '/resources',  icon: '🗂️', status: 'coming-soon' },
   { label: 'Community',  href: '/community',  icon: '🔥', status: 'coming-soon' },
+  { label: 'Agents',     href: '/agents',     icon: '🤖', status: 'coming-soon' },
+  { label: 'Jobs',       href: '/jobs',       icon: '💼', status: 'coming-soon' },
 ];
 
 export const NAV_LIBRARY: NavItem[] = [

@@ -9,6 +9,8 @@ import {
   Newspaper,
   Flame,
   Star,
+  Bot,
+  Briefcase,
   type LucideIcon,
 } from 'lucide-react';
 import {
@@ -36,6 +38,8 @@ const ICON_MAP: Record<string, LucideIcon> = {
   '/resources': FolderOpen,
   '/news':      Newspaper,
   '/community': Flame,
+  '/agents':    Bot,
+  '/jobs':      Briefcase,
   '/saved':     Star,
 };
 
