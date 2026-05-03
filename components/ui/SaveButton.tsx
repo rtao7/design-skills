@@ -58,16 +58,20 @@ export function SaveButton({ itemId, initialSaved = false }: SaveButtonProps) {
           ? 'rgba(123,97,255,0.12)'
           : hovered
           ? 'var(--color-bg-elevated)'
-          : 'transparent',
+          : 'rgba(255,255,255,0.03)',
         border: '1px solid',
         borderColor: saved
           ? 'rgba(123,97,255,0.3)'
           : hovered
           ? 'var(--color-border-default)'
           : 'var(--color-border-subtle)',
-        color: saved ? 'var(--color-accent-primary)' : 'var(--color-text-secondary)',
+        color: saved
+          ? 'var(--color-accent-primary)'
+          : hovered
+          ? 'var(--color-text-primary)'
+          : 'var(--color-text-secondary)',
         fontSize: '12px',
-        fontWeight: saved ? 500 : 400,
+        fontWeight: 500,
         cursor: 'pointer',
         transition:
           'background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast)',

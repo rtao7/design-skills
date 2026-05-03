@@ -38,9 +38,9 @@ export default function CommandMenu({ categories }: { categories: Category[] }) 
   }, []);
 
   const handleSelect = useCallback(
-    (category: string, slug: string) => {
+    () => {
       setOpen(false);
-      router.push(`/skills/${category}/${slug}`);
+      router.push('/skills');
     },
     [router]
   );
@@ -82,7 +82,7 @@ export default function CommandMenu({ categories }: { categories: Category[] }) 
                       <Command.Item
                         key={`${cat.name}/${skill.slug}`}
                         value={`${skill.title} ${skill.description} ${skill.tags.join(" ")}`}
-                        onSelect={() => handleSelect(cat.name, skill.slug)}
+                        onSelect={handleSelect}
                         className="flex items-start gap-3 px-2 py-2.5 rounded-lg text-sm cursor-pointer aria-selected:bg-muted transition-colors"
                       >
                         <FileText className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />

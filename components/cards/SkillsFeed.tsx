@@ -77,10 +77,9 @@ export function SkillsFeed({ categories, totalCount }: SkillsFeedProps) {
       <div
         style={{
           display: 'flex',
-          gap: '4px',
+          gap: '8px',
           marginBottom: '24px',
-          borderBottom: '1px solid var(--color-border-subtle)',
-          paddingBottom: '0',
+          flexWrap: 'wrap',
         }}
       >
         {tabs.map((tab) => {
@@ -92,16 +91,14 @@ export function SkillsFeed({ categories, totalCount }: SkillsFeedProps) {
               style={{
                 padding: '7px 14px',
                 fontSize: '13px',
-                fontWeight: isActive ? 500 : 400,
+                fontWeight: 500,
                 color: isActive ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
-                background: 'none',
-                border: 'none',
-                borderBottom: isActive
-                  ? '2px solid var(--color-accent-primary)'
-                  : '2px solid transparent',
+                background: isActive ? 'var(--color-bg-elevated)' : 'rgba(255,255,255,0.03)',
+                border: '1px solid',
+                borderColor: isActive ? 'var(--color-border-default)' : 'var(--color-border-subtle)',
+                borderRadius: 'var(--radius-md)',
                 cursor: 'pointer',
-                marginBottom: '-1px',
-                transition: 'color var(--transition-fast), border-color var(--transition-fast)',
+                transition: 'background var(--transition-fast), color var(--transition-fast), border-color var(--transition-fast)',
               }}
             >
               {tab}

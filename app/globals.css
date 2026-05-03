@@ -206,6 +206,30 @@
   animation: skeleton-pulse 1.6s ease-in-out infinite;
 }
 
+@keyframes detail-chat-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.detail-chat-bubble {
+  opacity: 0;
+  animation: detail-chat-slide-up 420ms ease forwards;
+}
+
+.detail-chat-bubble-user {
+  animation-delay: 120ms;
+}
+
+.detail-chat-bubble-ai {
+  animation-delay: 680ms;
+}
+
 /* Sidebar starts below the global nav */
 [data-slot="sidebar-container"] {
   top: var(--nav-height);

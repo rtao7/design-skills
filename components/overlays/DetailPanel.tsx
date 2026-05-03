@@ -1,14 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
-import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Check, Copy, Download, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { useDetailPanel } from './DetailPanelContext';
 import { CategoryBadge } from '@/components/ui/CategoryBadge';
-import { CopyButton } from '@/components/ui/CopyButton';
-import { ActionButton } from '@/components/ui/ActionButton';
-import { Download } from 'lucide-react';
+import type { Skill } from '@/lib/skills';
 
 function toDisplayCategory(category: string) {
   return category.charAt(0).toUpperCase() + category.slice(1);
@@ -22,6 +20,299 @@ function handleDownload(slug: string, raw: string) {
   a.download = `${slug}.md`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+const SKILL_SUMMARIES: Record<string, { summary: string; items: string[] }> = {
+  'pm-thinking-coach': {
+    summary:
+      'This skill acts like a PM thought partner for early, ambiguous product work. It helps a designer move from a loose idea to a clearer problem, audience, opportunity, and direction.',
+    items: [
+      'Asks focused PM-style questions about users, outcomes, constraints, and assumptions',
+      'Maps opportunities before jumping into feature ideas',
+      'Produces a session brief the designer can use for validation, stories, or planning',
+    ],
+  },
+  'idea-validator': {
+    summary:
+      'This skill pressure-tests a rough product idea before design starts. It checks whether the user, job-to-be-done, proposed direction, and differentiation actually hold together.',
+    items: [
+      'Tests user-direction fit and whether the idea solves the right problem',
+      'Identifies the riskiest assumptions and the cheapest way to test them',
+      'Ends with a clear verdict: proceed, proceed with conditions, or rethink the direction',
+    ],
+  },
+  'feature-story-writer': {
+    summary:
+      'This skill turns a validated product direction into plain-language user stories a designer can actually design from.',
+    items: [
+      'Breaks an epic into scoped story titles before writing details',
+      'Writes persona-based stories with JTBD, acceptance criteria, and assumptions',
+      'Keeps the output readable for non-technical stakeholders and design handoff',
+    ],
+  },
+  'story-to-prd': {
+    summary:
+      'This skill converts validated stories and product context into a structured PRD that engineers, stakeholders, or coding agents can pick up.',
+    items: [
+      'Synthesizes stories, validation notes, personas, goals, and scope boundaries',
+      'Defines requirements, success metrics, edge cases, and acceptance criteria',
+      'Creates a clean product document without inventing new decisions',
+    ],
+  },
+  'product-design-critiquer': {
+    summary:
+      'This skill gives senior product design critique for screenshots, wireframes, or described flows, grounded in user goals rather than personal taste.',
+    items: [
+      'Reviews clarity, usability, hierarchy, consistency, and edge states',
+      'Explains what is not working, why it matters, and how to improve it',
+      'Prioritizes the top fixes and calls out what is already working well',
+    ],
+  },
+};
+
+function getExampleOutput(skill: Skill) {
+  const category = toDisplayCategory(skill.category);
+  const primaryTag = skill.tags[0] ?? category.toLowerCase();
+  const description = skill.description.replace(/\s+/g, ' ').trim();
+  const mapped = SKILL_SUMMARIES[skill.slug];
+
+  if (mapped) return mapped;
+
+  if (skill.category === 'product') {
+    return {
+      summary: description || `This skill helps turn product context into a practical ${primaryTag} workflow.`,
+      items: [
+        'Clarifies the user problem, audience, and decision context',
+        'Shapes messy product thinking into design-ready structure',
+        'Surfaces assumptions, next steps, and concrete outputs to work from',
+      ],
+    };
+  }
+
+  if (skill.category === 'design') {
+    return {
+      summary: description || `This skill helps evaluate and improve design work with concrete ${primaryTag} guidance.`,
+      items: [
+        'Reviews the design through a focused product-design lens',
+        'Turns critique into specific layout, hierarchy, or interaction guidance',
+        'Highlights the most useful improvement to try next',
+      ],
+    };
+  }
+
+  return {
+    summary: description || `This skill helps with ${category.toLowerCase()} work by structuring the response into a useful output.`,
+    items: [
+      `Applies the ${primaryTag} workflow to the user's context`,
+      'Organizes the response into clear, reusable sections',
+      'Ends with practical next steps',
+    ],
+  };
+}
+
+function ExampleOutput({ skill }: { skill: Skill }) {
+  const example = getExampleOutput(skill);
+  const [copied, setCopied] = useState(false);
+
+  async function handleCopy() {
+    try {
+      await navigator.clipboard.writeText(skill.body);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    } catch {
+      const el = document.createElement('textarea');
+      el.value = skill.body;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand('copy');
+      document.body.removeChild(el);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1600);
+    }
+  }
+
+  return (
+    <section
+      aria-label="Example output simulation"
+      style={{
+        padding: '16px',
+        border: '1px solid var(--color-border-default)',
+        borderRadius: 'var(--radius-card)',
+        background: 'rgba(255,255,255,0.03)',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '10px',
+        }}
+      >
+        <div
+          className="detail-chat-bubble detail-chat-bubble-user"
+          style={{
+            alignSelf: 'flex-end',
+            maxWidth: '76%',
+            padding: '9px 12px',
+            borderRadius: '14px 14px 4px 14px',
+            background: 'var(--color-accent-primary)',
+            color: '#fff',
+            fontSize: '13px',
+            fontWeight: 500,
+            lineHeight: 1.45,
+          }}
+        >
+          What does this do?
+        </div>
+        <div
+          className="detail-chat-bubble detail-chat-bubble-ai"
+          style={{
+            alignSelf: 'flex-start',
+            maxWidth: '92%',
+            padding: '12px',
+            borderRadius: '14px 14px 14px 4px',
+            background: 'var(--color-bg-elevated)',
+            border: '1px solid var(--color-border-subtle)',
+            color: 'var(--color-text-secondary)',
+            fontSize: '12px',
+            lineHeight: 1.6,
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '8px',
+            }}
+          >
+            <span
+              aria-hidden="true"
+              style={{
+                width: '24px',
+                height: '24px',
+                borderRadius: '50%',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'rgba(123,97,255,0.16)',
+                border: '1px solid rgba(123,97,255,0.32)',
+                color: 'var(--color-accent-primary)',
+                fontSize: '12px',
+                fontWeight: 700,
+                flexShrink: 0,
+              }}
+            >
+              AI
+            </span>
+            <span
+              style={{
+                color: 'var(--color-text-primary)',
+                fontSize: '13px',
+                fontWeight: 600,
+              }}
+            >
+              AI Agent
+            </span>
+          </div>
+          <div style={{ marginBottom: '8px' }}>
+            {example.summary}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+            }}
+          >
+            {example.items.map((item) => (
+              <div
+                key={item}
+                style={{
+                  display: 'flex',
+                  gap: '8px',
+                  alignItems: 'flex-start',
+                }}
+              >
+                <span
+                  aria-hidden="true"
+                  style={{
+                    width: '4px',
+                    height: '4px',
+                    borderRadius: '50%',
+                    background: 'var(--color-accent-primary)',
+                    marginTop: '8px',
+                    flexShrink: 0,
+                  }}
+                />
+                <span style={{ flex: 1 }}>{item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div
+          className="detail-chat-bubble detail-chat-bubble-ai"
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            gap: '8px',
+            animationDelay: '1040ms',
+          }}
+        >
+          <SuggestedPromptButton
+            icon={copied ? <Check size={13} /> : <Copy size={13} />}
+            label={copied ? 'Copied skill prompt' : 'Copy skill prompt'}
+            onClick={handleCopy}
+          />
+          <SuggestedPromptButton
+            icon={<Download size={13} />}
+            label="Download markdown"
+            onClick={() => handleDownload(skill.slug, skill.raw)}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function SuggestedPromptButton({
+  icon,
+  label,
+  onClick,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+}) {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+        padding: '7px 10px',
+        borderRadius: 'var(--radius-pill)',
+        background: hovered ? 'var(--color-bg-elevated)' : 'rgba(255,255,255,0.03)',
+        border: '1px solid',
+        borderColor: hovered ? 'var(--color-border-default)' : 'var(--color-border-subtle)',
+        color: hovered ? 'var(--color-text-primary)' : 'var(--color-text-secondary)',
+        fontSize: '12px',
+        fontWeight: 500,
+        cursor: 'pointer',
+        transition: 'background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast)',
+      }}
+    >
+      {icon}
+      {label}
+    </button>
+  );
 }
 
 export function DetailPanel() {
@@ -122,22 +413,8 @@ export function DetailPanel() {
             </button>
           </div>
 
-          {/* Actions */}
-          <div
-            style={{
-              display: 'flex',
-              gap: '8px',
-              padding: '14px 20px',
-              borderBottom: '1px solid var(--color-border-subtle)',
-            }}
-          >
-            <CopyButton content={skill.body} />
-            <ActionButton
-              icon={<Download size={13} />}
-              label="Download"
-              onClick={() => handleDownload(skill.slug, skill.raw)}
-              title="Download as .md"
-            />
+          <div style={{ padding: '16px 20px 0' }}>
+            <ExampleOutput skill={skill} />
           </div>
 
           {/* Markdown content */}

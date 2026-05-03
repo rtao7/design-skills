@@ -92,34 +92,3 @@ export async function getAllCategories(): Promise<Category[]> {
 
   return categories;
 }
-
-export async function getSkill(category: string, slug: string): Promise<Skill | null> {
-  // Try top-level first
-  try {
-    const filePath = path.join(SKILLS_DIR, category, `${slug}.md`);
-    return await readSkillFile(filePath, category, slug);
-  } catch {}
-
-  // Search subfolders
-  try {
-    const categoryPath = path.join(SKILLS_DIR, category);
-    const items = await fs.readdir(categoryPath, { withFileTypes: true });
-    for (const item of items) {
-      if (!item.isDirectory()) continue;
-      try {
-        const filePath = path.join(categoryPath, item.name, `${slug}.md`);
-        return await readSkillFile(filePath, category, slug, item.name);
-      } catch {}
-    }
-  } catch {}
-
-  return null;
-}
-
-export async function getAllSkillPaths(): Promise<{ category: string; slug: string }[]> {
-  const categories = await getAllCategories();
-  return categories.flatMap((c) => [
-    ...c.skills.map((s) => ({ category: s.category, slug: s.slug })),
-    ...c.folders.flatMap((f) => f.skills.map((s) => ({ category: s.category, slug: s.slug }))),
-  ]);
-}

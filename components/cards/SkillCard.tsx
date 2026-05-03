@@ -1,10 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { ExternalLink, Download, Eye } from 'lucide-react';
+import { Download, Eye } from 'lucide-react';
 import type { Skill } from '@/lib/skills';
-import { CategoryBadge } from '@/components/ui/CategoryBadge';
-import { TagBadge } from '@/components/ui/TagBadge';
 import { CopyButton } from '@/components/ui/CopyButton';
 import { ActionButton } from '@/components/ui/ActionButton';
 import { useDetailPanel } from '@/components/overlays/DetailPanelContext';
@@ -13,10 +11,6 @@ import { SaveButton } from '@/components/ui/SaveButton';
 type SkillCardProps = {
   skill: Skill;
 };
-
-function toDisplayCategory(category: string): string {
-  return category.charAt(0).toUpperCase() + category.slice(1);
-}
 
 function handleDownload(skill: Skill) {
   const blob = new Blob([skill.raw], { type: 'text/markdown' });
@@ -31,46 +25,55 @@ function handleDownload(skill: Skill) {
 export function SkillCard({ skill }: SkillCardProps) {
   const [hovered, setHovered] = useState(false);
   const { openPanel } = useDetailPanel();
-  const displayCategory = toDisplayCategory(skill.category);
-  const skillUrl = `/skills/${skill.category}/${skill.slug}`;
 
   return (
     <div
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={() => openPanel(skill)}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openPanel(skill);
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-label={`Preview ${skill.title}`}
       style={{
         display: 'flex',
         flexDirection: 'column',
         background: 'var(--color-bg-surface)',
         border: '1px solid',
-        borderColor: hovered ? 'var(--color-accent-primary)' : 'var(--color-border-subtle)',
+        borderColor: hovered ? 'var(--color-accent-primary)' : 'var(--color-border-default)',
         borderRadius: 'var(--radius-card)',
         padding: '16px',
         transform: hovered ? 'translateY(-2px)' : 'translateY(0)',
-        boxShadow: hovered ? 'var(--shadow-card-hover)' : 'none',
+        boxShadow: hovered ? 'var(--shadow-card-hover)' : '0 1px 0 rgba(255,255,255,0.03)',
         transition: 'transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base)',
-        cursor: 'default',
+        cursor: 'pointer',
       }}
     >
-      {/* Top row: category badge + open link */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-        <CategoryBadge category={displayCategory} />
-        <ActionButton
-          icon={<ExternalLink size={13} />}
-          title="Open skill"
-          disabled
-        />
+      {/* Skill title */}
+      <div
+        style={{
+          fontSize: '15px',
+          fontWeight: 600,
+          color: 'var(--color-text-primary)',
+          marginBottom: '4px',
+          letterSpacing: '-0.01em',
+          lineHeight: 1.35,
+        }}
+      >
+        {skill.title}
       </div>
 
-      {/* Skill name — monospace */}
       <div
         style={{
           fontFamily: 'var(--font-geist-mono), monospace',
-          fontSize: '14px',
-          fontWeight: 600,
-          color: 'var(--color-text-primary)',
-          marginBottom: '6px',
-          letterSpacing: '-0.01em',
+          fontSize: '11px',
+          color: 'var(--color-text-secondary)',
+          marginBottom: '10px',
         }}
       >
         {skill.slug}
@@ -96,7 +99,7 @@ export function SkillCard({ skill }: SkillCardProps) {
         >
           A
         </div>
-        <span style={{ fontSize: '11px', color: 'var(--color-text-muted)' }}>Author</span>
+        <span style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>Author</span>
       </div>
 
       {/* Description — 2-line clamp */}
@@ -125,24 +128,12 @@ export function SkillCard({ skill }: SkillCardProps) {
         }}
       />
 
-      {/* Tags */}
-      {skill.tags.length > 0 && (
-        <div
-          style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '4px',
-            marginBottom: '12px',
-          }}
-        >
-          {skill.tags.slice(0, 4).map((tag) => (
-            <TagBadge key={tag} tag={tag} />
-          ))}
-        </div>
-      )}
-
       {/* Actions */}
-      <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+      <div
+        onClick={(event) => event.stopPropagation()}
+        onKeyDown={(event) => event.stopPropagation()}
+        style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}
+      >
         <CopyButton content={skill.body} />
         <ActionButton
           icon={<Download size={13} />}
